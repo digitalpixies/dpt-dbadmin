@@ -1,0 +1,85 @@
+<div ng-app="DPTDBAdminApp" ng-controller="CRUDCtrl" class="localizedbootstrap">
+  <form>
+    <div class="form-group">
+      <label for="tablename">Table</label>
+      <select id="tablename" class="form-control" ng-model="query.tablename" ng-change="query.control.SelectTable(query.tablename)">
+      <option value="" ng-hide="query.tablename"></option>
+      <option ng-repeat="table in tables">{{table.id}}</option>
+    </select>
+    </div>
+  </form>
+
+  <div class="panel panel-default QueryPanel ngHide" ng-show="query.tablename!=null">
+    <div class="panel-heading text-right">
+      <span>{{query.tablename}}</span>
+      <a ng-click="query.control.ToggleSettings()">Settings</a>
+    </div>
+    <div class="panel-body ngHide" ng-show="query.control._displaySettings">
+
+      <form>
+        <div class="form-group">
+          <label for="columns">Columns</label>
+          <ul class="list-group">
+            <li class="list-group-item clearfix" ng-repeat="column in query.columns track by $index">
+              <span>{{column.id}}</span>
+              <button class="btn btn-default btn-xs pull-right" ng-click="query.control.RemoveColumn($index)">DELETE</button>
+            </li>
+          </ul>
+          <div class="text-right">
+            <div class="btn-group btn-group-xs">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Add Column <span class="caret"></span>
+            </button>
+              <ul class="dropdown-menu dropdown-menu-right">
+                <li ng-repeat="column in query.availableColumns"><a ng-click="query.control.AddColumn(column)">{{column.id}}</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a ng-click="query.control.AddAllColumns()">Add all of above</a></li>
+                <li><a>Add custom **@TODO**</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="page_size">Page Size</label>
+          <input class="form-control input-sm" type="text" id="page_size" ng-model="query.page_size" />
+        </div>
+      </form>
+
+      <div class="text-right">
+        <a class="btn btn-default" role="button" ng-click="query.control.CloseSettings()">Close Settings</a>
+      </div>
+
+    </div>
+    <table class="table table-striped table-condensed table-hover QueryResult">
+      <thead>
+        <tr>
+          <th ng-repeat="column in query.columns">{{column.id}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="row in query.results">
+          <td ng-repeat="column in query.columns">{{row[column.id]}}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="{{query.columns.length}}" class="text-right">
+            <span class="text-muted"># rows: {{query.count}}</span>
+          </td>
+        </tr>
+        <tr>
+          <th colspan="{{query.columns.length}}">
+            <div class="row text-center">
+              <div class="col-xs-12 text-center">
+                <ul ng-hide="query.count<=query.page_size" uib-pagination boundary-links="true" ng-change="query.control.Execute()" total-items="query.count" ng-model="query.current_page" max-size="control.max_pages" items-per-page="query.page_size" class="pagination-sm"
+                  previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
+                </ul>
+              </div>
+            </div>
+          </th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+</div>

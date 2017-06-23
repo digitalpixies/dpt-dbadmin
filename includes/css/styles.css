@@ -1,0 +1,8 @@
+.QueryResult {
+  table-layout: fixed;
+  word-wrap: break-word;
+}
+
+.QueryPanel>.panel-heading>span {
+  float:left;
+}
